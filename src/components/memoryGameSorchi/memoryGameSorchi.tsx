@@ -2,7 +2,9 @@ import { Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import TimerProgress from "../TimerProgress/TimerProgress";
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Button from "@mui/material/Button";
+import GuidanceMessage from "../GuidanceMessage/GuidanceMessage";
 type Props = {}
 const images = [
     "images/01.png",
@@ -33,7 +35,9 @@ const MemoryGameSorchi = (props: Props) => {
     const [time, setTime] = useState(90); // زمان ابتدایی بازی ۶۰ ثانیه است
     const [gameOver, setGameOver] = useState(false);
     const [show, setShow] = useState(true)
-
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     useEffect(() => {
         shuffle(images);
         // const newCards = images.map((image) => ({ image, revealed: false }));
@@ -111,33 +115,39 @@ const MemoryGameSorchi = (props: Props) => {
 
     return (
         <Grid py={1} width={'100%'} height={'100vh'} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
-            <Grid width={{ xs: '100%',sm:'80%',md:'60%', lg: '40%' }} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Typography width={{ xs: '100%' }} textAlign={'center'} fontWeight={'bold'} bgcolor={'#9506e7'} color={'#fff'} p={'10px 0'}>{'بازی حافظه'}</Typography>
+            <Grid width={{ xs: '100%', sm: '80%', md: '60%', lg: '40%' }} flexDirection={'row-reverse'} bgcolor={'#9506e7'} color={'#fff'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Typography width={{ xs: '95%' }} textAlign={'center'} fontWeight={'bold'} p={'10px 30px 10px 0'}>{'بازی حافظه'}</Typography>
+                <Grid width={{ xs: '5%' }}>
+                    <Button onClick={handleOpen}>
+                        <MoreVertIcon style={{ color: '#fff' }} />
+                    </Button>
+                </Grid>
+                <GuidanceMessage open={open} handleClose={handleClose}/>
             </Grid>
-            <Grid mt={{xs:1,sm:3}} display={'flex'} flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'space-between'} width={{ xs: '100%',sm:'80%',md:'60%', lg: '40%' }}>
-                <Grid display={'flex'} justifyContent={'space-between'} alignItems={'center'} px={{xs:2,sm:0}}>
+            <Grid mt={{ xs: 1, sm: 3 }} display={'flex'} flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'space-between'} width={{ xs: '100%', sm: '80%', md: '60%', lg: '40%' }}>
+                <Grid display={'flex'} justifyContent={'space-between'} alignItems={'center'} px={{ xs: 2, sm: 0 }}>
                     <Grid display={'flex'} justifyContent={'center'} alignItems={'center'} gap={1} flexDirection={'row-reverse'}>
                         <Typography fontWeight={'bold'}>{': امتیاز شما   '}</Typography>
                         {score}
                     </Grid>
-                    <Grid display={{ xs: 'flex', sm: 'none' }}>تعداد کلیک: {clickCounts}</Grid>
+                    <Grid display={{ xs: 'flex', sm: 'none' }}>تعداد تلاش: {clickCounts}</Grid>
                 </Grid>
-                <Grid width={{xs:'100%',sm:'70%'}} pl={2} textAlign={'center'}>
+                <Grid width={{ xs: '100%', sm: '70%' }} pl={2} textAlign={'center'}>
                     <TimerProgress value={time} />
                 </Grid>
-                <Grid display={{ xs: 'none', sm: 'flex' }}>تعداد کلیک: {clickCounts}</Grid>
+                <Grid display={{ xs: 'none', sm: 'flex' }}>تعداد تلاش: {clickCounts}</Grid>
             </Grid>
-            <Grid display={'flex'} flexWrap={'wrap'}  width={{ xs: '100%',sm:'80%',md:'60%', lg: '40%' }} height={'100%'}>
-                <Grid display={'flex'} justifyContent={'space-evenly'} flexWrap={'wrap'} width={'100%'} gap={{xs:0.5,sm:0.5}} height={{xs:'80%',sm:'60%',md:'55%',lg:'100%'}} bgcolor={'#c4c4c4'}>
+            <Grid display={'flex'} flexWrap={'wrap'} width={{ xs: '100%', sm: '80%', md: '60%', lg: '40%' }} height={'100%'}>
+                <Grid display={'flex'} justifyContent={'space-evenly'} flexWrap={'wrap'} width={'100%'} gap={{ xs: 0.5, sm: 0.5 }} height={{ xs: '80%', sm: '60%', md: '55%', lg: '100%' }} bgcolor={'#c4c4c4'}>
                     {cards.slice(0, 16).map((card, index) => (
                         <>
                             {show ? <Grid
                                 key={index}
                                 className="card"
-                                width={{xs:'75px',sm:'135px',lg:'125px'}}
-                                height={{xs:'75px',sm:'135px',lg:'125px'}}
+                                width={{ xs: '75px', sm: '135px', lg: '125px' }}
+                                height={{ xs: '75px', sm: '135px', lg: '125px' }}
                                 style={{
-                                    
+
                                     backgroundSize: 'cover',
                                     backgroundRepeat: 'no-repeat',
                                     // @ts-ignore
@@ -153,9 +163,9 @@ const MemoryGameSorchi = (props: Props) => {
                             ></Grid> : <Grid
                                 key={index}
                                 className="card"
-                                width={{xs:'75px',sm:'135px',lg:'125px'}}
-                                height={{xs:'75px',sm:'135px',lg:'125px'}}
-                                
+                                width={{ xs: '75px', sm: '135px', lg: '125px' }}
+                                height={{ xs: '75px', sm: '135px', lg: '125px' }}
+
                                 style={{
                                     backgroundSize: 'cover',
                                     backgroundRepeat: 'no-repeat',
