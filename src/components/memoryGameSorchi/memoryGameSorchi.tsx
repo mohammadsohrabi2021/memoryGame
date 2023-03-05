@@ -1,10 +1,12 @@
 import { Grid, Typography } from "@mui/material";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import TimerProgress from "../TimerProgress/TimerProgress";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from "@mui/material/Button";
 import GuidanceMessage from "../GuidanceMessage/GuidanceMessage";
+import FinalMessage from "../FinalMessage/FinalMessage";
+import { dataJsonScripts } from '../../../public/scripts/json'
 type Props = {}
 const images = [
     "images/01.png",
@@ -17,31 +19,39 @@ const images = [
     "images/08.jpg",
 ];
 
-const shuffle = (array: string[]) => {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
-};
+
 
 const MemoryGameSorchi = (props: Props) => {
-
+    const [api, setApi] = useState({})
     const [cards, setCards] = useState([]);
     const [revealed, setRevealed] = useState([]);
     const [score, setScore] = useState(0);
     const [clickCounts, setClickCounts] = useState(0)
-    const [time, setTime] = useState(90); // زمان ابتدایی بازی ۶۰ ثانیه است
+    const [time, setTime] = useState(90); // زمان ابتدایی بازی 90 ثانیه است
     const [gameOver, setGameOver] = useState(false);
     const [show, setShow] = useState(true)
     const [open, setOpen] = React.useState(false);
+    const [data, setData] = useState([]);
+   
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [openFinalMessage, setOpenFinalMessage] = React.useState(false);
+    const handleOpenFinalMessage = () => setOpenFinalMessage(true);
+    const handleCloseFinalMessage = () => setOpenFinalMessage(false);
+
+    const shuffle = (array: string[]) => {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+
+    };
+    
+   
     useEffect(() => {
         shuffle(images);
-        // const newCards = images.map((image) => ({ image, revealed: false }));
-
         const shuffledImages = shuffle(images.concat(images)); // تکرار عکس‌ها را اضافه می‌کنیم
         const newCards = shuffledImages.map((image) => ({ image, revealed: false }));
         // @ts-ignore
@@ -49,6 +59,9 @@ const MemoryGameSorchi = (props: Props) => {
         setTimeout(() => {
             setShow(false)
         }, 1000);
+        // @ts-ignore
+        setApi(dataJsonScripts)
+        
     }, []);
 
     useEffect(() => {
@@ -60,9 +73,15 @@ const MemoryGameSorchi = (props: Props) => {
             return () => clearInterval(intervalId);
         } else if (time === 0) { // اگر زمان بازی تمام شده باشد
             setGameOver(true);
-            setTimeout(() => alert("Time's up! Game over."), 500);
+            setOpenFinalMessage(true)
+            setTimeout(() => <Grid>
+                {
+                    openFinalMessage ? <FinalMessage score={score} time={time} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} clickCounts={clickCounts} /> : ''
+                }
+            </Grid>, 500);
         }
-    }, [time]);
+    }, [time, score]);
+
     useEffect(() => {
         if (revealed.length === 2) {
             setTimeout(checkMatch, 1000);
@@ -83,12 +102,17 @@ const MemoryGameSorchi = (props: Props) => {
                 setClickCounts((prev) => (prev + 1));
 
             }
-            //  // check if game is finished
-            //  if (score + 1 === images.length / 2) {
-            //     setTimeout(() =>
-            //         alert("You won the game!")
-            //         , 500);
-            // }
+
+        }
+        // check if game is finished
+        if (score + 1 === images.length) {
+            setGameOver(true);
+            setOpenFinalMessage(true)
+            setTimeout(() => <Grid>
+                {
+                    openFinalMessage ? <FinalMessage score={score} time={time} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} clickCounts={clickCounts} /> : ''
+                }
+            </Grid>, 500);
         }
     };
 
@@ -122,7 +146,7 @@ const MemoryGameSorchi = (props: Props) => {
                         <MoreVertIcon style={{ color: '#fff' }} />
                     </Button>
                 </Grid>
-                <GuidanceMessage open={open} handleClose={handleClose}/>
+                <GuidanceMessage open={open} handleClose={handleClose} />
             </Grid>
             <Grid mt={{ xs: 1, sm: 3 }} display={'flex'} flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'space-between'} width={{ xs: '100%', sm: '80%', md: '60%', lg: '40%' }}>
                 <Grid display={'flex'} justifyContent={'space-between'} alignItems={'center'} px={{ xs: 2, sm: 0 }}>
@@ -137,6 +161,9 @@ const MemoryGameSorchi = (props: Props) => {
                 </Grid>
                 <Grid display={{ xs: 'none', sm: 'flex' }}>تعداد تلاش: {clickCounts}</Grid>
             </Grid>
+            {time === 0 && <FinalMessage clickCounts={clickCounts} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} time={time} score={score} />}
+            {/* {score === images.length && <FinalMessage clickCounts={clickCounts} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} time={time} score={score} />} */}
+            {/* {time === 0 || score + 1  === images.length && <FinalMessage clickCounts={clickCounts} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} time={time} score={score} />} */}
             <Grid display={'flex'} flexWrap={'wrap'} width={{ xs: '100%', sm: '80%', md: '60%', lg: '40%' }} height={'100%'}>
                 <Grid display={'flex'} justifyContent={'space-evenly'} flexWrap={'wrap'} width={'100%'} gap={{ xs: 0.5, sm: 0.5 }} height={{ xs: '80%', sm: '60%', md: '55%', lg: '100%' }} bgcolor={'#c4c4c4'}>
                     {cards.slice(0, 16).map((card, index) => (
