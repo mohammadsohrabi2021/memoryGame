@@ -140,8 +140,7 @@ const MemoryGameSorchi = (props: Props) => {
             setCards(newCards);
             setRevealed([]);
         }
-    };
-
+    };    
     return (
         <Grid py={1} width={'100%'} height={'100vh'} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
             <Grid width={{ xs: '100%', sm: '500px', md: '342px' }} flexDirection={'row-reverse'} bgcolor={'#9506e7'} color={'#fff'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -163,7 +162,7 @@ const MemoryGameSorchi = (props: Props) => {
                             <Typography color={'#fff'} fontWeight={'bold'}>{score}</Typography>
                         </Grid>
                     </Grid>
-                    <Grid width={{ xs: '30%', sm: '20%' }} pl={2} textAlign={'center'}>
+                    <Grid width={{ xs: '30%', sm: '50%' }} pl={2} textAlign={'center'}>
                         <TimerProgress value={time} />
                     </Grid>
                     <Grid position={'relative'} p={0.5} borderRadius={'5px'} display={'flex'} flexDirection={'row-reverse'} bgcolor={'rgb(228,99,219)'} sx={{ background: 'linear-gradient(180deg, rgba(228,99,219,1) 15%, rgba(29,81,226,1) 98%)' }} width={'100px'} height={'40px'}>
@@ -185,8 +184,8 @@ const MemoryGameSorchi = (props: Props) => {
                             {show ? <Grid
                                 key={index}
                                 className="card"
-                                width={{ xs: '75px', sm: '100px', md: '75px' }}
-                                height={{ xs: '75px', sm: '100px', md: '75px' }}
+                                width={{ xs: '85px', sm: '100px', md: '75px' }}
+                                height={{ xs: '85px', sm: '100px', md: '75px' }}
                                 borderRadius={'50%'}
                                 style={{
 
@@ -203,15 +202,15 @@ const MemoryGameSorchi = (props: Props) => {
 
                                 onClick={() => handleCardClick(index)}
                             ></Grid> : <Grid
-                                key={index}                         
+                                key={index}
                                 className="card"
-                                width={{ xs: '75px', sm: '100px', md: '75px' }}
-                                height={{ xs: '75px', sm: '100px', md: '75px' }}
+                                width={{ xs: '85px', sm: '100px', md: '75px' }}
+                                height={{ xs: '85px', sm: '100px', md: '75px' }}
                                 borderRadius={'50%'}
                                 border={'2px solid #fff'}
-                                
-                                style={{
-                                    cursor:'pointer',
+                               
+                                sx={{
+                                    cursor: 'pointer',
                                     backgroundSize: 'cover',
                                     backgroundRepeat: 'no-repeat',
                                     // @ts-ignore
@@ -223,7 +222,7 @@ const MemoryGameSorchi = (props: Props) => {
                                 }}
 
                                 onClick={() => handleCardClick(index)}
-                                // @ts-ignore
+                            // @ts-ignore
                             > {matchedIds.includes(index) && <Image src={tickIcon} alt={'tickIcon'} style={{ width: '30px', height: '30px' }} />}</Grid>}
                         </>
                     ))}
