@@ -203,14 +203,15 @@ const MemoryGameSorchi = (props: Props) => {
 
                                 onClick={() => handleCardClick(index)}
                             ></Grid> : <Grid
-                                key={index}
-
+                                key={index}                         
                                 className="card"
                                 width={{ xs: '75px', sm: '100px', md: '75px' }}
                                 height={{ xs: '75px', sm: '100px', md: '75px' }}
                                 borderRadius={'50%'}
                                 border={'2px solid #fff'}
+                                
                                 style={{
+                                    cursor:'pointer',
                                     backgroundSize: 'cover',
                                     backgroundRepeat: 'no-repeat',
                                     // @ts-ignore
