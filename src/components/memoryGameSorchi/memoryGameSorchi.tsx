@@ -56,7 +56,7 @@ const MemoryGameSorchi = (props: Props) => {
         return newArray;
 
     };
-
+   
 
     useEffect(() => {
         shuffle(images);
@@ -73,6 +73,11 @@ const MemoryGameSorchi = (props: Props) => {
     }, []);
 
     useEffect(() => {
+        if (score === images.length) {
+            setGameOver(true);
+            setOpenFinalMessage(true)
+            console.log('object');
+        }  
         if (!gameOver && time > 0) { // اگر بازی خاتمه نیافته و زمان باقیمانده وجود داشته باشد
             const intervalId = setInterval(() => {
                 setTime((prevTime) => prevTime - 1);
@@ -89,10 +94,7 @@ const MemoryGameSorchi = (props: Props) => {
             // </Grid>, 500);
         }
         // check if game is finished
-        else if (score === images.length) {
-            setGameOver(true);
-            setOpenFinalMessage(true)
-        }
+       
     }, [time, score]);
 
     useEffect(() => {
@@ -140,7 +142,9 @@ const MemoryGameSorchi = (props: Props) => {
             setCards(newCards);
             setRevealed([]);
         }
-    };    
+        
+    };  
+  
     return (
         <Grid py={1} width={'100%'} height={'100vh'} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
             <Grid width={{ xs: '100%', sm: '500px', md: '342px' }} flexDirection={'row-reverse'} bgcolor={'#9506e7'} color={'#fff'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
