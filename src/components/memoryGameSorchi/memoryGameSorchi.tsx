@@ -7,6 +7,13 @@ import Button from "@mui/material/Button";
 import GuidanceMessage from "../GuidanceMessage/GuidanceMessage";
 import FinalMessage from "../FinalMessage/FinalMessage";
 import { dataJsonScripts } from '../../../public/scripts/json'
+import tickIcon from '../../../public/images/tick.png'
+import tickFinal from '../../../public/images/tickFinal.png'
+import clickIcon from '../../../public/images/clickIcon.png'
+
+
+import { Roboto } from "next/font/google";
+import { Transform } from "stream";
 type Props = {}
 const images = [
     "images/01.png",
@@ -32,7 +39,8 @@ const MemoryGameSorchi = (props: Props) => {
     const [show, setShow] = useState(true)
     const [open, setOpen] = React.useState(false);
     const [data, setData] = useState([]);
-   
+    const [ids, setIds] = useState([]);
+    const [matchedIds, setMatchedIds] = useState([]);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [openFinalMessage, setOpenFinalMessage] = React.useState(false);
@@ -48,8 +56,8 @@ const MemoryGameSorchi = (props: Props) => {
         return newArray;
 
     };
-    
-   
+
+
     useEffect(() => {
         shuffle(images);
         const shuffledImages = shuffle(images.concat(images)); // تکرار عکس‌ها را اضافه می‌کنیم
@@ -61,7 +69,7 @@ const MemoryGameSorchi = (props: Props) => {
         }, 1000);
         // @ts-ignore
         setApi(dataJsonScripts)
-        
+
     }, []);
 
     useEffect(() => {
@@ -74,11 +82,16 @@ const MemoryGameSorchi = (props: Props) => {
         } else if (time === 0) { // اگر زمان بازی تمام شده باشد
             setGameOver(true);
             setOpenFinalMessage(true)
-            setTimeout(() => <Grid>
-                {
-                    openFinalMessage ? <FinalMessage score={score} time={time} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} clickCounts={clickCounts} /> : ''
-                }
-            </Grid>, 500);
+            // setTimeout(() => <Grid>
+            //     {
+            //         openFinalMessage ? <FinalMessage score={score} time={time} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} clickCounts={clickCounts} /> : ''
+            //     }
+            // </Grid>, 500);
+        }
+        // check if game is finished
+        else if (score === images.length) {
+            setGameOver(true);
+            setOpenFinalMessage(true)
         }
     }, [time, score]);
 
@@ -104,28 +117,20 @@ const MemoryGameSorchi = (props: Props) => {
             }
 
         }
-        // check if game is finished
-        if (score + 1 === images.length) {
-            setGameOver(true);
-            setOpenFinalMessage(true)
-            setTimeout(() => <Grid>
-                {
-                    openFinalMessage ? <FinalMessage score={score} time={time} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} clickCounts={clickCounts} /> : ''
-                }
-            </Grid>, 500);
-        }
+
     };
 
-    const checkMatch = () => {
+    const checkMatch = (index: number | any) => {
         const [index1, index2] = revealed;
         const card1 = cards[index1];
         const card2 = cards[index2];
+
         // @ts-ignore
         if (card1.image === card2.image) {
             // increase score
             setScore((prev) => prev + 1);
             setRevealed([]);
-
+            setMatchedIds((prevMatchedIds) => [...prevMatchedIds, index1, index2]);
         } else {
             const newCards = [...cards];
             // @ts-ignore
@@ -139,7 +144,7 @@ const MemoryGameSorchi = (props: Props) => {
 
     return (
         <Grid py={1} width={'100%'} height={'100vh'} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
-            <Grid width={{ xs: '100%', sm: '80%', md: '60%', lg: '40%' }} flexDirection={'row-reverse'} bgcolor={'#9506e7'} color={'#fff'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            <Grid width={{ xs: '100%', sm: '500px', md: '342px' }} flexDirection={'row-reverse'} bgcolor={'#9506e7'} color={'#fff'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Typography width={{ xs: '95%' }} textAlign={'center'} fontWeight={'bold'} p={'10px 30px 10px 0'}>{'بازی حافظه'}</Typography>
                 <Grid width={{ xs: '5%' }}>
                     <Button onClick={handleOpen}>
@@ -148,31 +153,41 @@ const MemoryGameSorchi = (props: Props) => {
                 </Grid>
                 <GuidanceMessage open={open} handleClose={handleClose} />
             </Grid>
-            <Grid mt={{ xs: 1, sm: 3 }} display={'flex'} flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'space-between'} width={{ xs: '100%', sm: '80%', md: '60%', lg: '40%' }}>
-                <Grid display={'flex'} justifyContent={'space-between'} alignItems={'center'} px={{ xs: 2, sm: 0 }}>
-                    <Grid display={'flex'} justifyContent={'center'} alignItems={'center'} gap={1} flexDirection={'row-reverse'}>
-                        <Typography fontWeight={'bold'}>{': امتیاز شما   '}</Typography>
-                        {score}
+            <Grid position={'relative'} my={{ xs: 1, sm: 2 }} display={'flex'} flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'space-between'} width={{ xs: '100%', sm: '500px', md: '342px' }}>
+                <Grid display={'flex'} width={'100%'} justifyContent={'space-between'} alignItems={'center'} px={{ xs: 0.5, sm: 0 }}>
+                    <Grid position={'relative'} p={0.5} borderRadius={'5px'} display={'flex'} flexDirection={'row-reverse'} bgcolor={'rgb(228,99,219)'} sx={{ background: 'linear-gradient(180deg, rgba(228,99,219,1) 15%, rgba(29,81,226,1) 98%)' }} width={'100px'} height={'40px'}>
+                        <Grid border={'1px solid #fff'} borderRadius={'5px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                            <Grid position={'absolute'} right={-20} sx={{ transform: ' skew(-20deg)', transformOrigin: 'top left' }}>
+                                <Image src={tickFinal} alt={'icon'} style={{ width: '45px', height: '45px', borderRadius: '50%' }} />
+                            </Grid>
+                            <Typography color={'#fff'} fontWeight={'bold'}>{score}</Typography>
+                        </Grid>
                     </Grid>
-                    <Grid display={{ xs: 'flex', sm: 'none' }}>تعداد تلاش: {clickCounts}</Grid>
+                    <Grid width={{ xs: '30%', sm: '20%' }} pl={2} textAlign={'center'}>
+                        <TimerProgress value={time} />
+                    </Grid>
+                    <Grid position={'relative'} p={0.5} borderRadius={'5px'} display={'flex'} flexDirection={'row-reverse'} bgcolor={'rgb(228,99,219)'} sx={{ background: 'linear-gradient(180deg, rgba(228,99,219,1) 15%, rgba(29,81,226,1) 98%)' }} width={'100px'} height={'40px'}>
+                        <Grid border={'1px solid #fff'} borderRadius={'5px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                            <Typography color={'#fff'} fontWeight={'bold'}>{clickCounts}</Typography>
+                            <Grid position={'absolute'} left={-18} sx={{ transform: ' skew(10deg)', transformOrigin: 'top left' }}>
+                                <Image src={clickIcon} alt={'clickIcon'} style={{ width: '45px', height: '45px', borderRadius: '50%' }} />
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
-                <Grid width={{ xs: '100%', sm: '70%' }} pl={2} textAlign={'center'}>
-                    <TimerProgress value={time} />
-                </Grid>
-                <Grid display={{ xs: 'none', sm: 'flex' }}>تعداد تلاش: {clickCounts}</Grid>
             </Grid>
+            {score === images.length && <FinalMessage clickCounts={clickCounts} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} time={time} score={score} />}
             {time === 0 && <FinalMessage clickCounts={clickCounts} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} time={time} score={score} />}
-            {/* {score === images.length && <FinalMessage clickCounts={clickCounts} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} time={time} score={score} />} */}
-            {/* {time === 0 || score + 1  === images.length && <FinalMessage clickCounts={clickCounts} openFinalMessage={openFinalMessage} handleCloseFinalMessage={handleCloseFinalMessage} time={time} score={score} />} */}
-            <Grid display={'flex'} flexWrap={'wrap'} width={{ xs: '100%', sm: '80%', md: '60%', lg: '40%' }} height={'100%'}>
-                <Grid display={'flex'} justifyContent={'space-evenly'} flexWrap={'wrap'} width={'100%'} gap={{ xs: 0.5, sm: 0.5 }} height={{ xs: '80%', sm: '60%', md: '55%', lg: '100%' }} bgcolor={'#c4c4c4'}>
+            <Grid display={'flex'} alignItems={'center'} flexWrap={'wrap'} width={{ xs: '100%', sm: '500px', md: '342px' }} height={{ xs: '80%', sm: '60%', md: '640px', lg: '100%' }} bgcolor={'#c4c4c4'}>
+                <Grid display={'flex'} justifyContent={'center'} flexWrap={'wrap'} width={'100%'} gap={{ xs: 0.5, sm: 1 }} height={{ xs: '80%', sm: '60%', md: '400px', lg: '100%' }} >
                     {cards.slice(0, 16).map((card, index) => (
                         <>
                             {show ? <Grid
                                 key={index}
                                 className="card"
-                                width={{ xs: '75px', sm: '135px', lg: '125px' }}
-                                height={{ xs: '75px', sm: '135px', lg: '125px' }}
+                                width={{ xs: '75px', sm: '100px', md: '75px' }}
+                                height={{ xs: '75px', sm: '100px', md: '75px' }}
+                                borderRadius={'50%'}
                                 style={{
 
                                     backgroundSize: 'cover',
@@ -189,10 +204,12 @@ const MemoryGameSorchi = (props: Props) => {
                                 onClick={() => handleCardClick(index)}
                             ></Grid> : <Grid
                                 key={index}
-                                className="card"
-                                width={{ xs: '75px', sm: '135px', lg: '125px' }}
-                                height={{ xs: '75px', sm: '135px', lg: '125px' }}
 
+                                className="card"
+                                width={{ xs: '75px', sm: '100px', md: '75px' }}
+                                height={{ xs: '75px', sm: '100px', md: '75px' }}
+                                borderRadius={'50%'}
+                                border={'2px solid #fff'}
                                 style={{
                                     backgroundSize: 'cover',
                                     backgroundRepeat: 'no-repeat',
@@ -205,7 +222,8 @@ const MemoryGameSorchi = (props: Props) => {
                                 }}
 
                                 onClick={() => handleCardClick(index)}
-                            ></Grid>}
+                                // @ts-ignore
+                            > {matchedIds.includes(index) && <Image src={tickIcon} alt={'tickIcon'} style={{ width: '30px', height: '30px' }} />}</Grid>}
                         </>
                     ))}
 
