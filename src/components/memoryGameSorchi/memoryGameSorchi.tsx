@@ -9,7 +9,7 @@ import FinalMessage from "../FinalMessage/FinalMessage";
 import { dataJsonScripts } from '../../../public/scripts/json'
 import tickIcon from '../../../public/images/tick.png'
 import tickFinal from '../../../public/images/tickFinal.png'
-import clickIcon from '../../../public/images/clickIcon.png'
+import clickIcon from '../../../public/images/click.png'
 
 
 import { Roboto } from "next/font/google";
@@ -161,7 +161,7 @@ const MemoryGameSorchi = (props: Props) => {
                     <Grid position={'relative'} p={0.5} borderRadius={'5px'} display={'flex'} flexDirection={'row-reverse'} bgcolor={'rgb(228,99,219)'} sx={{ background: 'linear-gradient(180deg, rgba(228,99,219,1) 15%, rgba(29,81,226,1) 98%)' }} width={'100px'} height={'40px'}>
                         <Grid border={'1px solid #fff'} borderRadius={'5px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                             <Grid position={'absolute'} right={-20} sx={{ transform: ' skew(-20deg)', transformOrigin: 'top left' }}>
-                                <Image src={tickFinal} alt={'icon'} style={{ width: '45px', height: '45px', borderRadius: '50%' }} />
+                                <Image src={tickFinal} alt={'icon'} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
                             </Grid>
                             <Typography color={'#fff'} fontWeight={'bold'}>{score}</Typography>
                         </Grid>
@@ -172,8 +172,8 @@ const MemoryGameSorchi = (props: Props) => {
                     <Grid position={'relative'} p={0.5} borderRadius={'5px'} display={'flex'} flexDirection={'row-reverse'} bgcolor={'rgb(228,99,219)'} sx={{ background: 'linear-gradient(180deg, rgba(228,99,219,1) 15%, rgba(29,81,226,1) 98%)' }} width={'100px'} height={'40px'}>
                         <Grid border={'1px solid #fff'} borderRadius={'5px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                             <Typography color={'#fff'} fontWeight={'bold'}>{clickCounts}</Typography>
-                            <Grid position={'absolute'} left={-18} sx={{ transform: ' skew(10deg)', transformOrigin: 'top left' }}>
-                                <Image src={clickIcon} alt={'clickIcon'} style={{ width: '45px', height: '45px', borderRadius: '50%' }} />
+                            <Grid position={'absolute'} left={-25} sx={{ transform: ' skew(10deg)', transformOrigin: 'top left' }}>
+                                <Image src={clickIcon} alt={'clickIcon'} style={{ width: '65px', height: '65px', borderRadius: '50%',color:'green' }} />
                             </Grid>
                         </Grid>
                     </Grid>
